@@ -1,14 +1,13 @@
 package main
 
 import (
-	"encoding/hex"
 	"encoding/json"
 	"fmt"
 
-	servicesdk "github.com/irisnet/service-sdk-go"
-	"github.com/irisnet/service-sdk-go/service"
-	"github.com/irisnet/service-sdk-go/types"
-	"github.com/irisnet/service-sdk-go/types/store"
+	sdk "github.com/bianjieai/irita-sdk-go"
+	"github.com/bianjieai/irita-sdk-go/modules/service"
+	"github.com/bianjieai/irita-sdk-go/types"
+	"github.com/bianjieai/irita-sdk-go/types/store"
 
 	"github.com/smartcontractkit/chainlink/core/logger"
 	"github.com/smartcontractkit/chainlink/core/store/models"
@@ -33,7 +32,7 @@ type KeyParams struct {
 	Mnemonic string
 	Name     string
 	Password string
-	Address  types.AccAddress
+	Address  string
 }
 
 type Endpoint struct {
@@ -43,7 +42,7 @@ type Endpoint struct {
 }
 
 type IritaAdapter struct {
-	Client    servicesdk.ServiceClient
+	Client    sdk.IRITAClient
 	KeyParams KeyParams
 }
 
@@ -63,14 +62,14 @@ func NewIritaAdapter(endpoint Endpoint, keyParams KeyParams) (*IritaAdapter, err
 		return nil, err
 	}
 
-	client := servicesdk.NewServiceClient(cfg)
+	client := sdk.NewIRITAClient(cfg)
 
 	address, err := client.Recover(keyParams.Name, keyParams.Password, keyParams.Mnemonic)
 	if err != nil {
 		return nil, err
 	}
 
-	keyParams.Address, _ = types.AccAddressFromBech32(address)
+	keyParams.Address = address
 
 	return &IritaAdapter{
 		Client:    client,
@@ -81,15 +80,13 @@ func NewIritaAdapter(endpoint Endpoint, keyParams KeyParams) (*IritaAdapter, err
 func (adapter IritaAdapter) handle(req Request) (interface{}, error) {
 	logger.Infof("Request received: %+v", req)
 
-	requestIDBz, err := hex.DecodeString(req.RequestID)
-	if err != nil {
-		return nil, err
-	}
-
 	result, output := adapter.buildServiceResponse(req.Result)
 
+	println("XXXXX RESULT:   ", result)
+	println("XXXXX OUTPUT:   ", output)
+
 	msg := service.MsgRespondService{
-		RequestId: requestIDBz,
+		RequestId: req.RequestID,
 		Result:    result,
 		Output:    output,
 		Provider:  adapter.KeyParams.Address,
