@@ -7,6 +7,7 @@ import (
 	sdk "github.com/bianjieai/irita-sdk-go"
 	"github.com/bianjieai/irita-sdk-go/modules/service"
 	"github.com/bianjieai/irita-sdk-go/types"
+	sdktypes "github.com/bianjieai/irita-sdk-go/types"
 	"github.com/bianjieai/irita-sdk-go/types/store"
 
 	"github.com/smartcontractkit/chainlink/core/logger"
@@ -92,9 +93,12 @@ func (adapter IritaAdapter) handle(req Request) (interface{}, error) {
 		Provider:  adapter.KeyParams.Address,
 	}
 
+	coin, _ := sdktypes.ParseDecCoins("400000uirita")
 	baseTx := types.BaseTx{
 		From:     adapter.KeyParams.Name,
 		Password: adapter.KeyParams.Password,
+		Gas:      200000,
+		Fee:      coin,
 	}
 
 	res, err := adapter.Client.BuildAndSend([]types.Msg{&msg}, baseTx)
