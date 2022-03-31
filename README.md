@@ -21,6 +21,7 @@ make install
 | `ILA_ENDPOINT_RPC` | Endpoint RPC address for the IRITA node to connect to |
 | `ILA_ENDPOINT_GRPC` | Endpoint gRPC address for the IRITA node to connect to |
 | `ILA_LISTEN_ADDR` | Address on which the IRITA adapter will be listening, default to `0.0.0.0:8080` |
+| `ILA_TX_FEE` | Transaction fee
 
 ### Start
 

@@ -17,6 +17,7 @@ func main() {
 	chainID := os.Getenv("ILA_CHAIN_ID")
 	endpointRPC := os.Getenv("ILA_ENDPOINT_RPC")
 	endpointGRPC := os.Getenv("ILA_ENDPOINT_GRPC")
+	txFee := os.Getenv("ILA_TX_FEE")
 	mnemonic := os.Getenv("ILA_KEY_MNEMONIC")
 	listenAddr := os.Getenv("ILA_LISTEN_ADDR")
 
@@ -24,6 +25,7 @@ func main() {
 		ChainID: chainID,
 		RPC:     endpointRPC,
 		GRPC:    endpointGRPC,
+		Fee:     txFee,
 	}
 
 	keyParams := KeyParams{
